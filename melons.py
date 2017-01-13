@@ -1,5 +1,7 @@
 """This file should have our order classes in it."""
 from random import randint
+from datetime import datetime
+import time
 
 class AbstractMelonOrder(object):
     """Calculates cost of melon orders."""
@@ -16,6 +18,19 @@ class AbstractMelonOrder(object):
         """Adds Splurge pricing"""
 
         splurge_price = randint(5, 9)
+        weekday = False
+        rush_hour = False
+
+        order_time = datetime.now()
+        if order_time.weekday != 5 or order_time.weekday != 6:
+            weekday = True
+
+        if order_time.hour >= 8 and order_time.hour <= 12:
+            rush_hour = True
+
+        if weekday is True and rush_hour is True:
+            splurge_price = splurge_price + 4
+
         return splurge_price
 
     def get_total(self):
