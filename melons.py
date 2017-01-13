@@ -1,5 +1,5 @@
 """This file should have our order classes in it."""
-
+from random import randint
 
 class AbstractMelonOrder(object):
     """Calculates cost of melon orders."""
@@ -12,27 +12,32 @@ class AbstractMelonOrder(object):
         self.country_code = country_code
         self.shipped = False
 
+    def get_base_price(self):
+        """Adds Splurge pricing"""
+
+        splurge_price = randint(5, 9)
+        return splurge_price
+
     def get_total(self):
         """Calculate price."""
 
-        base_price = 5
-        if self.species == "christmas melon":
-            base_price = base_price * 1.5
-            total = (1 + self.tax) * self.qty * base_price
+        base_price = self.get_base_price()
 
-        elif self.country_code is not None and self.qty < 10:
+        if self.country_code is not None and self.qty < 10:
             base_price = base_price + 3.0
-            total = (1 + self.tax) * self.qty * base_price
-        
-        else:
-            total = (1 + self.tax) * self.qty * base_price
-        
+
+        if self.species == "christmas melon":
+            base_price = base_price * 1.5      
+
+        total = (1 + self.tax) * self.qty * base_price
+
         return total
 
     def mark_shipped(self):
         """Set shipped to true."""
 
         self.shipped = True
+
 
 class DomesticMelonOrder(AbstractMelonOrder):
     """A domestic (in the US) melon order."""
@@ -58,3 +63,19 @@ class InternationalMelonOrder(AbstractMelonOrder):
         """Return the country code."""
 
         return self.country_code
+
+class GovernmentMelonOrder(AbstractMelonOrder):
+    """Government Melon Orders"""
+
+    def __init__(self, species, qty):
+        """Initizalize government melon order attributes"""
+        super(GovernmentMelonOrder, self).__init__(species, qty)
+
+        self.order_type = "government"
+        self.tax = 0
+        self.passed_inspection = False
+
+    def mark_inspection(self):
+        """Checks to see if melon passed inspection"""
+
+        self.passed_inspection = True
